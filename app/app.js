@@ -1,3 +1,12 @@
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 class Usuario {
     constructor() {
         this.nome = '';
@@ -142,7 +151,7 @@ export function sendMessage() {
     // O sistema não deve permitir que o código de remetente e destinatário sejam iguais
     // O sistema não deve permitir códigos, assunto e mensagem em branco
     let messageAssunto = '';
-    let messageText = '';
+    var messageText = '';
     let userFrom = '';
     let userTo = '';
     let typeOf = '';
@@ -180,22 +189,30 @@ export function sendMessage() {
     while (typeOf == '' || typeOf == null) {
         typeOf = prompt('Deseja enviar uma mensagem apimentada?', 'S/N');
     }
-    /*
-    if(typeOf == 'S'){
-            
-        const getMessage = async (userFrom: string, userTo: string) =>{
-            const response = await fetch(`https://foaas.com/bday/${userFrom}/${userTo}`)
-            const data = await response.json()
-            return JSON.stringify(data.menssage)
+    if (typeOf == 'S') {
+        let listMessage = new listAPiMessages(userTo);
+        let messageSort = listMessage.sortMessage();
+        function getAPIMessage(message) {
+            return __awaiter(this, void 0, void 0, function* () {
+                let url = 'https://foaas.com';
+                let path = message;
+                let response = yield fetch(`${url}${path}`, {
+                    method: 'GET',
+                    headers: { 'Accept': 'application/json' }
+                });
+                let data = yield response.json();
+                messageText = yield data.message;
+            });
         }
-        getMessage(userFrom,userTo).then(message => messageText = message)
-            
-    //processamento sincrono e assincrono js, async await, promise*/
-    while (messageAssunto == '' || messageAssunto == null) {
-        messageAssunto = prompt('Digite um Assunto');
+        getAPIMessage(messageSort);
     }
-    while (messageText == '' || messageText == null) {
-        messageText = prompt('Digite uma mensagem');
+    else {
+        while (messageAssunto == '' || messageAssunto == null) {
+            messageAssunto = prompt('Digite um Assunto');
+        }
+        while (messageText == '' || messageText == null) {
+            messageText = prompt('Digite uma mensagem');
+        }
     }
     let message = new Mensagem(usuarioFrom, usuarioTo, messageAssunto, messageText);
     listMessages.addMessage(message);
@@ -241,32 +258,25 @@ export function seeHistory() {
     usuario = listaUsuarios.checkUser(usuario);
     listMessages.showMessage(usuario);
 }
-/*
-class listAPiMessages{
-
-    private messagesAPI = new Array<string>()
-
-    constructor(){
-        this.messagesAPI.push('/because/:from')
-        this.messagesAPI.push('/absolutely/:company/:from')
-        this.messagesAPI.push('/absolutely/:company/:from')
-        this.messagesAPI.push('/absolutely/:company/:from')
-        this.messagesAPI.push('/bday/:name/:from')
-        this.messagesAPI.push('/bye/:from')
-        this.messagesAPI.push('/cocksplat/:name/:from')
-        this.messagesAPI.push('/deraadt/:name/:from')
-        this.messagesAPI.push('/dosomething/:do/:something/:from')
-        this.messagesAPI.push('/everyone/:from')
-        this.messagesAPI.push('/fewer/:name/:from')
-        this.messagesAPI.push('/flying/:from')
-        this.messagesAPI.push('/fyyff/:from')
-
+class listAPiMessages {
+    constructor(userTo) {
+        this.messagesAPI = new Array();
+        this.messagesAPI.push(`/bday/${userTo}/:from`);
+        this.messagesAPI.push(`/blackadder/${userTo}/:from`);
+        this.messagesAPI.push(`/dalton/${userTo}/:from`);
+        this.messagesAPI.push(`/donut/${userTo}/:from`);
+        this.messagesAPI.push(`/bday/${userTo}/:from`);
+        this.messagesAPI.push(`/equity/${userTo}/:from`);
+        this.messagesAPI.push(`/cocksplat/${userTo}/:from`);
+        this.messagesAPI.push(`/deraadt/${userTo}/:from`);
+        this.messagesAPI.push(`/fewer/${userTo}/:from`);
+        this.messagesAPI.push(`/fts/${userTo}/:from`);
+        this.messagesAPI.push(`/fewer/${userTo}/:from`);
+        this.messagesAPI.push(`/keep/${userTo}/:from`);
+        this.messagesAPI.push(`/linus/${userTo}/:from`);
     }
-
-    sortMessage(){
-        const random = Number(Math.floor(Math.random() * this.messagesAPI.length))
-
-
+    sortMessage() {
+        const random = Number(Math.floor(Math.random() * this.messagesAPI.length));
+        return this.messagesAPI[random];
     }
-
-}*/
+}

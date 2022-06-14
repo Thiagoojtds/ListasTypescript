@@ -188,7 +188,7 @@ export function sendMessage() {
 
     
     let messageAssunto: string | null = '';
-    let messageText: string | null = '';
+    var messageText: string | null = '';
     let userFrom: string | null = '';
     let userTo: string | null = '';
     let typeOf: string | null= '';
@@ -233,26 +233,35 @@ export function sendMessage() {
         typeOf = prompt('Deseja enviar uma mensagem apimentada?', 'S/N')
     }
 
-    /*
+    
     if(typeOf == 'S'){
-            
-        const getMessage = async (userFrom: string, userTo: string) =>{
-            const response = await fetch(`https://foaas.com/bday/${userFrom}/${userTo}`)
-            const data = await response.json()
-            return JSON.stringify(data.menssage)
-        }
-        getMessage(userFrom,userTo).then(message => messageText = message)
-            
-    //processamento sincrono e assincrono js, async await, promise*/
 
+        let listMessage = new listAPiMessages(userTo)
+        let messageSort = listMessage.sortMessage()
+            
+        async function getAPIMessage(message: string) {
+            let url = 'https://foaas.com'
+            let path = message
+            let response = await fetch(`${url}${path}`,{
+                method: 'GET',
+                headers:{'Accept': 'application/json'}
+            })
+            let data = await response.json()
+            messageText = await data.message
+        }
+
+        getAPIMessage(messageSort)
+
+    }else{      
 
         while(messageAssunto == ''|| messageAssunto == null){
             messageAssunto = prompt('Digite um Assunto')
         }
     
         while(messageText == ''|| messageText == null){
-            messageText =  prompt('Digite uma mensagem')
+            messageText = prompt('Digite uma mensagem')
         }
+    }
     
         let message = new Mensagem(usuarioFrom, usuarioTo, messageAssunto, messageText)
         listMessages.addMessage(message)
@@ -311,33 +320,33 @@ export function seeHistory(){
 
 }
 
-/*
+
 class listAPiMessages{
 
     private messagesAPI = new Array<string>()
 
-    constructor(){
-        this.messagesAPI.push('/because/:from')
-        this.messagesAPI.push('/absolutely/:company/:from')
-        this.messagesAPI.push('/absolutely/:company/:from')
-        this.messagesAPI.push('/absolutely/:company/:from')
-        this.messagesAPI.push('/bday/:name/:from')
-        this.messagesAPI.push('/bye/:from')
-        this.messagesAPI.push('/cocksplat/:name/:from')
-        this.messagesAPI.push('/deraadt/:name/:from')
-        this.messagesAPI.push('/dosomething/:do/:something/:from')
-        this.messagesAPI.push('/everyone/:from')
-        this.messagesAPI.push('/fewer/:name/:from')
-        this.messagesAPI.push('/flying/:from')
-        this.messagesAPI.push('/fyyff/:from')
+    constructor(userTo: string){
+        this.messagesAPI.push(`/bday/${userTo}/:from`)
+        this.messagesAPI.push(`/blackadder/${userTo}/:from`)
+        this.messagesAPI.push(`/dalton/${userTo}/:from`)
+        this.messagesAPI.push(`/donut/${userTo}/:from`)
+        this.messagesAPI.push(`/bday/${userTo}/:from`)
+        this.messagesAPI.push(`/equity/${userTo}/:from`)
+        this.messagesAPI.push(`/cocksplat/${userTo}/:from`)
+        this.messagesAPI.push(`/deraadt/${userTo}/:from`)
+        this.messagesAPI.push(`/fewer/${userTo}/:from`)
+        this.messagesAPI.push(`/fts/${userTo}/:from`)
+        this.messagesAPI.push(`/fewer/${userTo}/:from`)
+        this.messagesAPI.push(`/keep/${userTo}/:from`)
+        this.messagesAPI.push(`/linus/${userTo}/:from`)
 
     }
 
-    sortMessage(){
+    sortMessage():string{
         const random = Number(Math.floor(Math.random() * this.messagesAPI.length))
-
+        return this.messagesAPI[random]
 
     }
 
-}*/
+}
 
