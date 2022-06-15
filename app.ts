@@ -1,7 +1,5 @@
-import { data } from "jquery";
-import axios from "./node_modules/axios/index";
 
-class Usuario {
+class User {
 
     private nome: string | null = '';
     private codigo: number = 0;
@@ -27,40 +25,58 @@ class Usuario {
 
 }
 
+
 export class usersList{
 
-    private usuarios = new Array<Usuario>();
+    private usuarios = new Array<User>();
 
-    userRegister(user: Usuario) {
+    //método para verificar se o usuário já está cadastrado
+    isUserAlreadyRegistered(user:User){
+        for (let i in this.usuarios) {
+            if (this.usuarios[i].getCodigo() == user.getCodigo()) {
+                alert('Código já cadastrado');
+                //reinicia o processo para cadastrar
+                registerUser();
+            }else{
+                return false
+            }
+        }
+    }
+
+    //método para inserir o usuçário na lista
+    userRegister(user: User) {
+        //adiciona um usuário a lista na primeira execução
         if (this.usuarios.length == 0) {
             this.usuarios.push(user)
-        } else {
-            for (let i in this.usuarios) {
-                if (this.usuarios[i].getCodigo() == user.getCodigo()) {
-                    alert('Código já cadastrado');
-                    cadastrarUsuario();
-                }else{
-                    this.usuarios.push(user);
-                    alert('Usuario Cadastrado!');
-                }
+            //verififca se o usuário já está cadastrado
+        } else if(!this.isUserAlreadyRegistered(user)){
+            //insere usuário na lista
+            this.usuarios.push(user);
+            alert('Usuario Cadastrado!');
+        }
+    }
+
+    isListEmpty(): boolean{
+        if (this.usuarios.length == 0) {
+            console.log('Lista vazia');
+            return true
+        }
+        return false
+    }
+    //lista os usuários que estão na lista e mostra na tela
+    listUsers(): void {
+        if (!this.isListEmpty()) {
+            //limpa o console a cada execução
+            console.clear();
+            for(let i in this.usuarios){
+                console.log(this.usuarios[i])
             }
         }
 
     }
 
-    listUsers(): void {
-        if (this.usuarios.length == 0) {
-            console.log('Lista vazia');
-        }
-        console.clear();
-        for(let i in this.usuarios){
-            
-            console.log(this.usuarios[i])
-        }
-
-    }
-
-    checkUser(user: Usuario):Usuario{
+    //verifica se o usuário está cadastrado na lista
+    checkUser(user: User):User{
         for(let i in this.usuarios){
             if(this.usuarios[i].getCodigo() === user.getCodigo()){
                 user.setNome(this.usuarios[i].getNome())
@@ -68,6 +84,7 @@ export class usersList{
                 return user
             }
         }
+        //se não seta os valores vazios para executar novamente
         console.log('Usuario não existe')
         user.setNome('')
         user.setCodigo(0)
@@ -76,22 +93,24 @@ export class usersList{
 
 }
 
-class Mensagem {
 
-    private userFrom: Usuario;
+class Message {
+
+    private userFrom: User;
     private userFromName: string;
-    private userTo: Usuario;
+    private userTo: User;
     private userToName: string;
-    private assunto: string | null ;
-    private mensagem: string | null;
+    private subject: string | null ;
+    private message: string | null;
     private userFromCode: number;
     private userToCode: number;
     
-    constructor(userTo: Usuario,userFrom: Usuario, assunto: string| null, mensagem: string| null){
+    constructor(userTo: User,userFrom: User, subject: string| null, message: string| null){
         this.userTo = userTo
         this.userFrom = userFrom
-        this.assunto = assunto
-        this.mensagem = mensagem
+        this.subject = subject
+        this.message = message
+        //pega os dados do objeto recebido e converte em String/Number
         this.userFromName = String(this.userFrom.getNome())
         this.userToName = String(this.userTo.getNome())
         this.userFromCode = Number(this.userFrom.getCodigo())
@@ -118,7 +137,7 @@ class Mensagem {
         return this.userTo;
     }
 
-    setUserTo(userTo: Usuario){
+    setUserTo(userTo: User){
         this.userTo = userTo;
     }
 
@@ -126,46 +145,47 @@ class Mensagem {
         return this.userFrom;
     }
 
-    setUserFrom(userFrom: Usuario){
+    setUserFrom(userFrom: User){
         this.userFrom = userFrom;
     }
 
-    getMensagem() {
-        return this.mensagem;
+    getMessage() {
+        return this.message;
     }
 
-    setMensagem(mensagem: string) {
-        this.mensagem = mensagem;
+    setMessage(message: string) {
+        this.message = message;
     }
 
-    getAssunto() {
-        return this.assunto;
+    getSubject() {
+        return this.subject;
     }
 
-    setAssunto(assunto: string) {
-        this.assunto = assunto;
+    setSubject(subject: string) {
+        this.subject = subject;
     }
 }
 
+
 class messageList{
 
-    private messages = new Array<Mensagem>()
+    private messages = new Array<Message>()
 
-    addMessage(msg: Mensagem):void{
+    //adiciona uma mensagem a lista
+    addMessage(msg: Message):void{
         this.messages.push(msg)
     }
-
-
-    showMessage(userCode: Usuario){
+    //mostra a mensagem formatada no console
+    showMessage(userCode: User){
         let user = userCode.getCodigo()
         for(let i in this.messages){
             if(this.messages[i].getUserToCode() == user || this.messages[i].getUserFromCode() == user){
                 // [Assunto] - [Recebida/Enviada]
                 // Enviado por: [Nome do enviador] | Recebida por: [Nome do recebedor]
                 // [Mensagem]
-                console.log(`Mensagens de ${userCode.getNome()}:\n Assunto: ${this.messages[i].getAssunto()}
+                console.log(`Mensagens de ${userCode.getNome()}:\n Assunto: ${this.messages[i].getSubject()}
                 Enviado por: ${this.messages[i].getUserToName()} | Recebida por: ${this.messages[i].getUserFromName()}
-                ${this.messages[i].getMensagem()}`)
+                ${this.messages[i].getMessage()}`)
             }
         }
     }
@@ -173,149 +193,159 @@ class messageList{
 
 
 export function sendMessage() {
-    //2.1 - Escolha um código de usuário remetente:
-    //2.1 - Apresenta a lista dos usuários cadastrados com código e nome
-    //2.2 - Escolha um código de usuário destinatário:
-    //2.2 - Apresenta a lista dos usuários cadastrados com código e nome
-    //2.3 - Digite um assunto:
-    //2.4 - Digite uma mensagem:
-    // Regras: Caso não possua nenhum usuário cadastrado o sistema deverá apresentar a
-    // mensagem “Nenhum usuário cadastrado”
-    // O sistema deverá validar se o código do usuário remetente e destinatário existem
-    // O sistema não deve permitir que o código de remetente e destinatário sejam iguais
-    // O sistema não deve permitir códigos, assunto e mensagem em branco
 
-
-    
-    let messageAssunto: string | null = '';
+    //declaração de variáveis
+    let messageSubject: string | null = '';
     var messageText: string | null = '';
     let userFrom: string | null = '';
     let userTo: string | null = '';
     let typeOf: string | null= '';
-    let usuarioFrom = new Usuario()
-    let usuarioTo = new Usuario()
+    let UserFrom = new User()
+    let UserTo = new User()
 
+    //garante um valor de input no prompt para sseguir com a execução
     while (userFrom == '' || userFrom == null) {
         listaUsuarios.listUsers()
         userFrom = prompt('Escolha um código de usuário remetente')
-        usuarioFrom.setCodigo(Number(userFrom))
-        usuarioFrom.setNome('')
-        usuarioFrom = listaUsuarios.checkUser(usuarioFrom);
-        if(usuarioFrom.getCodigo() == 0){
+        UserFrom.setCodigo(Number(userFrom))
+        UserFrom.setNome('')
+        //verifica se o usuário exise e retorna vazio ou não
+        UserFrom = listaUsuarios.checkUser(UserFrom);
+        if(UserFrom.getCodigo() == 0){
             alert('Usuario não existe');
             userFrom = ''
         }
-        userFrom = usuarioFrom.getNome()
+        userFrom = UserFrom.getNome()
     }
-    
-    //let confirmacao = prompt(`Enviar mensagem de: ${userFrom}`)
 
+    //garante um valor de input no prompt para sseguir com a execução
     while (userTo == ''|| userTo == null) {
         listaUsuarios.listUsers()
         userTo = prompt('Escolha um código de usuário destinatário')
-        usuarioTo.setCodigo(Number(userTo))
-        usuarioTo.setNome('')
-        usuarioTo = listaUsuarios.checkUser(usuarioTo)
-        if(usuarioTo.getCodigo() == 0){
+        UserTo.setCodigo(Number(userTo))
+        UserTo.setNome('')
+        //verifica se o usuário exise e retorna vazio ou não
+        UserTo = listaUsuarios.checkUser(UserTo)
+        if(UserTo.getCodigo() == 0){
             alert('usuario não existe')
             userTo = ''
         }
-        userTo = usuarioTo.getNome()
+        userTo = UserTo.getNome()
     }
     
-
-    if(usuarioFrom.getCodigo() == usuarioTo.getCodigo()){
+    //verifica se o remetente e destinatário são iguais
+    if(UserTo.getCodigo() == UserTo.getCodigo()){
         alert('Remetente e Destinatário iguais')
         sendMessage()
     }
 
+    //garante um valor de input no prompt para sseguir com a execução
     while(typeOf == '' || typeOf == null){
         typeOf = prompt('Deseja enviar uma mensagem apimentada?', 'S/N')
     }
 
-    
     if(typeOf == 'S'){
 
+        //cria uma nova lista com urls da API e preenche com o usuário destinatário
         let listMessage = new listAPiMessages(userTo)
+        //sorteia uma url da lista
         let messageSort = listMessage.sortMessage()
-            
+
+
+        //busca a mensagem na API     
         async function getAPIMessage(message: string) {
-            let url = 'https://foaas.com'
-            let path = message
-            let response = await fetch(`${url}${path}`,{
+            let url = `https://foaas.com${message}`
+            let response = await fetch(url,{
                 method: 'GET',
                 headers:{'Accept': 'application/json'}
             })
-            let data = await response.json()
-            messageText = await data.message
+            //aguardam a resposta da API para seguir com a execução
+            var data = await response.json()
+            data = data.message
+            //seta o dado no localStorage para utilizar fora da função
+            localStorage.setItem('msg', data)
+                 
         }
-
+        //executa o método e passa uma url para fazer a requisição
         getAPIMessage(messageSort)
+        //pega o dado do localStorage
+        messageText = localStorage.getItem('msg')
 
     }else{      
 
-        while(messageAssunto == ''|| messageAssunto == null){
-            messageAssunto = prompt('Digite um Assunto')
+        //garante um valor de input no prompt para sseguir com a execução
+        while(messageSubject == ''|| messageSubject == null){
+            messageSubject = prompt('Digite um Assunto')
         }
     
+        //garante um valor de input no prompt para sseguir com a execução
         while(messageText == ''|| messageText == null){
             messageText = prompt('Digite uma mensagem')
         }
     }
-    
-        let message = new Mensagem(usuarioFrom, usuarioTo, messageAssunto, messageText)
+
+        //cria uma nova mensagem e insere na lista
+        let message = new Message(UserFrom, UserTo, messageSubject, messageText)
         listMessages.addMessage(message)
 
 
 }
+
+
+//instância duas listas a serem usadas durante a execução do código
 var listMessages = new messageList()
 var listaUsuarios = new usersList()
 
-export function cadastrarUsuario() {
-    // Ao escolher a opção 1 (cadastrar usuário) o sistema apresenta:
-    // 1.1 - Digite um nome:
-    // 1.2 - Digite um código:
-    // Regras: Após digitar o nome e em seguida o código o sistema deverá validar se o código já
-    // não foi cadastrado
-    // Caso esteja correto, o sistema deverá armazenar o usuário em uma lista e apresentar que o
-    // usuário foi cadastrado.
 
-    const user = new Usuario();
+//função para registrar um usuário
+export function registerUser() {
+
+    const user = new User();
     let userName: string | null = '';
     let userCode: string | null = '';
 
+
+    //garante um valor de input no prompt para sseguir com a execução
     while (userName == ''|| userName == null) {
         userName = prompt('Digite o nome');
     }
+
+    //garante um valor de input no prompt para sseguir com a execução
     while (userCode == '' || userCode == null) {
         userCode = prompt('Digite um código')
     }
+    //seta no objeto atual os dados
     user.setCodigo(Number(userCode));
     user.setNome(userName)
+    //insere um novo usuário na lista
     listaUsuarios.userRegister(user)
+    //lista os usuários
     listaUsuarios.listUsers()
 
     
 }
 
+
 export function seeHistory(){
-    // Ao escolher a opção 3 (ver histórico de mensagens) o sistema apresenta:
-    // 3.1 - Escolha de qual usuário deseja ver o histórico de mensagem:
-    // 3.2 - Apresenta a lista de usuários cadastrados com o código e nome
-    // 3.3 - O usuário escolhe um código (o sistema deverá validar se o código existe)
-    // 3.4 - O sistema apresenta todas as mensagens que ele enviou e recebeu:
 
+    //declaração de variáveis
     let userMessage: string | null = '';
-    let usuario = new Usuario();
+    let usuario = new User();
 
+    //lista os usuários
     listaUsuarios.listUsers();
+
+    //garante um valor de input no prompt para sseguir com a execução
     while(userMessage == ''|| userMessage == null){
        userMessage = prompt('Escolha de qual usuário deseja ver o histórico de mensagem') 
     }
 
+    //seta um códgio para buscar na lista
     usuario.setCodigo(Number(userMessage))
     usuario.setNome('')
+    //verifica se o usuário existe na lista
     usuario = listaUsuarios.checkUser(usuario)
+    //mostra a mensagem caso encontrado o usuário
     listMessages.showMessage(usuario);
 
 }
@@ -325,6 +355,7 @@ class listAPiMessages{
 
     private messagesAPI = new Array<string>()
 
+    //incializa a lista com alguns urls da API
     constructor(userTo: string){
         this.messagesAPI.push(`/bday/${userTo}/:from`)
         this.messagesAPI.push(`/blackadder/${userTo}/:from`)
@@ -342,10 +373,10 @@ class listAPiMessages{
 
     }
 
+    //sorteia um numero da lista e retorna o url da posição sorteada
     sortMessage():string{
         const random = Number(Math.floor(Math.random() * this.messagesAPI.length))
         return this.messagesAPI[random]
-
     }
 
 }
