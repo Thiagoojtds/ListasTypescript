@@ -1,7 +1,7 @@
 //importação das funções necesárias par aexecução do menu
-import { registerUser } from "app";
-import { sendMessage } from "app";
-import { seeHistory } from "app"
+import { registerUser } from "./app.js";
+import { sendMessage } from "./app.js";
+import { seeHistory } from "./app.js"
 
 
 //mostra o painel e retorna a escolha do usuário

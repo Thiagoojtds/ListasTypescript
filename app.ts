@@ -234,7 +234,7 @@ export function sendMessage() {
     }
     
     //verifica se o remetente e destinatário são iguais
-    if(UserTo.getCodigo() == UserTo.getCodigo()){
+    if(UserTo.getCodigo() == UserFrom.getCodigo()){
         alert('Remetente e Destinatário iguais')
         sendMessage()
     }
