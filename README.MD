@@ -8,7 +8,7 @@
 git clone https://github.com/Thiagoojtds/ListasTypescript
 ```
 
-<p>Para instalar o typescript no projeto você precisa ter o node.js instalado e usar os seguintes comandos em ordem<br>
+<p>Para instalar o typescript no projeto você precisa ter o node.js instalado e usar os seguintes comandos em ordem na pasta raíz<br>
  
 ```
 npm init
