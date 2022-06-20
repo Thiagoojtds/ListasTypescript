@@ -1,7 +1,8 @@
 <h1>Typescript List</h1>
 
-<p>Projeto feito em Typescript transpilado para Javascript, utilizando npm e node.js</p>
+<p>Projeto feito em Typescript, utilizando npm e node.js</p>
 
+<h2>Para executar o programa</h2>
 <p>Primeiramente faça o clone do reposítório em uma pasta local para sua máquina com o comando</P><br>
 
 ```
