@@ -1,8 +1,15 @@
-//importação das funções necesárias par aexecução do menu
-import { registerUser } from "./app.js";
-import { sendMessage } from "./app.js";
-import { seeHistory } from "./app.js"
+import {usersList} from "./models/users-list.js"
+import  {messageList}  from "./models/message-list.js";
+import  {Message}  from "./models/message-class.js";
+import  {User}  from "./models/user-class.js";
 
+//instância duas listas a serem usadas durante a execução do código
+export var listMessages = new messageList()
+export var listUsers = new usersList()
+
+//cria uma nova mensagem e insere na lista
+export let user = new User()
+let message = new Message()
 
 //mostra o painel e retorna a escolha do usuário
 function showPanel(){
@@ -18,19 +25,19 @@ var choose = showPanel();
 do{
     switch(choose){
         case 1:
-            //funcao cadastrar usuario
-            registerUser();
+            //funcao cadastrar usuario 
+            user.registerUser();
             choose = showPanel();
             break;
     
         case 2:
             //função enviar mensagem
-            sendMessage()
+            message.sendMessage()
             choose = showPanel();
         break;
     
         case 3:
-            seeHistory();
+            listMessages.seeHistory();
             //função ver histórico
             choose = showPanel();
         break;
@@ -43,5 +50,3 @@ do{
     }
 
 }while(choose != 4);
-
-
