@@ -13,7 +13,7 @@ git clone https://github.com/Thiagoojtds/ListasTypescript
  
 ```
 npm init
-npm i typescript
+npm i -g typescript
 npx tsc --init
 npm i --save-dev @types/node
 ```
