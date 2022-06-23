@@ -21,6 +21,6 @@ npm i --save-dev @types/node
  
 <p>Abrir o arquivo tsconfig.json gerado na pasta raíz do projeto e tirar o // (descomentar) o comando "outDir": "./dir", onde "./dir" será o diretório no qual será transpilado o código para Javascript.<br>
 <p>E então no terminal na pasta raíz do projeto utilizar o comando: <code>npx tsc</code> para transpilar o código.</p><br>
-<p>Agora você pode iniciar um servidor de preferência dentro da pasta do projeto e é só acessar com a url que será fornecida no terminal.</p><br>
+<p>Agora você pode iniciar um servidor de preferência dentro da pasta do projeto e é só acessar o endereço localhost na porta informada pelo servidor no navegador.</p><br>
 <p>Obs: As listas da aplicação para vizualização estarão no console do navegodor.</p>
 
