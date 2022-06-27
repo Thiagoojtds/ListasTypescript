@@ -1,6 +1,6 @@
 import { listUsers, listMessages } from "../view.js"
-import  {Message}  from "./message-class.js"
-import  {User}  from "./user-class.js"
+import  {Message}  from "./message.js"
+import  {User}  from "./user.js"
 
 export class messageList{
 
@@ -19,7 +19,7 @@ export class messageList{
                 // Enviado por: [Nome do enviador] | Recebida por: [Nome do recebedor]
                 // [Mensagem]
                 console.log(`Mensagens de ${userCode.getName()}:\n Assunto: ${this.messages[i].getSubject()}
-                Enviado por: ${this.messages[i].getUserFrom()} | Recebida por: ${this.messages[i].getUserTo()}
+                Enviado por: ${this.messages[i].getUserTo()} | Recebida por: ${this.messages[i].getUserFrom()}
                 ${this.messages[i].getMessage()}`)
             }
         }

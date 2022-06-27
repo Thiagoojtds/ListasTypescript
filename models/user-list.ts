@@ -1,4 +1,4 @@
-import  {User}  from "./user-class.js";
+import  {User}  from "./user.js";
 
 
 export class usersList{
